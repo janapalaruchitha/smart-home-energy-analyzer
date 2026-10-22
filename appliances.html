@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Appliances | SmartEnergy{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-heading">
+    <h1>Appliance Manager</h1>
+    <p>Add household appliances and calculate their estimated electricity consumption.</p>
+</section>
+
+<div class="appliance-summary">
+    <section class="card appliance-stat">
+        <h2>🔌 Total Appliances</h2>
+        <p class="summary-value">{{ appliances|length }}</p>
+    </section>
+
+    <section class="card appliance-stat">
+        <h2>⚡ Energy Consumption</h2>
+        <p class="summary-value">{{ total_kwh }} kWh</p>
+    </section>
+
+    <section class="card appliance-stat">
+        <h2>💰 Estimated Cost</h2>
+        <p class="summary-value">₹{{ "%.2f"|format(total_cost) }}</p>
+    </section>
+</div>
+
+<section class="card">
+    <h2>➕ Add New Appliance</h2>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST" class="appliance-form">
+        <div>
+            <label for="name">Appliance Name</label>
+            <input id="name" name="name" type="text"
+                   placeholder="e.g. Air Conditioner"
+                   maxlength="80" required>
+        </div>
+
+        <div>
+            <label for="watts">Power (Watts)</label>
+            <input id="watts" name="watts" type="number"
+                   min="0.1" max="100000" step="any"
+                   placeholder="e.g. 1500" required>
+        </div>
+
+        <div>
+            <label for="hours">Hours per Day</label>
+            <input id="hours" name="hours" type="number"
+                   min="0" max="24" step="any"
+                   placeholder="e.g. 5" required>
+        </div>
+
+        <div>
+            <label for="days">Days</label>
+            <input id="days" name="days" type="number"
+                   min="1" max="31" value="30" required>
+        </div>
+
+        <div class="appliance-submit">
+            <button type="submit" name="action" value="add">
+                Add Appliance
+            </button>
+        </div>
+    </form>
+
+    <p class="note">
+        Estimated energy = Watts × Hours per day × Days ÷ 1000.
+        Current tariff: ₹{{ tariff }} per kWh.
+    </p>
+</section>
+
+<section class="card">
+    <h2>📋 Registered Appliances</h2>
+
+    {% if appliances %}
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Appliance</th>
+                        <th>Watts</th>
+                        <th>Hours/day</th>
+                        <th>Days</th>
+                        <th>Energy (kWh)</th>
+                        <th>Cost (₹)</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in appliances %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.watts }}</td>
+                        <td>{{ item.hours }}</td>
+                        <td>{{ item.days }}</td>
+                        <td>{{ "%.2f"|format(item.energy) }}</td>
+                        <td>{{ "%.2f"|format(item.cost) }}</td>
+                        <td>
+                            <form method="POST" class="remove-form">
+                                <input type="hidden" name="action" value="remove">
+                                <input type="hidden" name="index" value="{{ loop.index0 }}">
+                                <button type="submit" class="remove-button">
+                                    Remove
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="empty-state">
+            No appliances added yet. Use the form above to register your first appliance.
+        </p>
+    {% endif %}
+</section>
+
+{% endblock %}

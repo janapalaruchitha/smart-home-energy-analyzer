@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | Smart Home Energy Analyzer{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-heading">
+    <div>
+        <h1>Energy Dashboard</h1>
+        <p>Monitor your household electricity consumption and estimated costs.</p>
+    </div>
+</section>
+
+<!-- Summary Cards -->
+<section class="summary-grid">
+
+    <div class="card summary-card">
+        <div class="summary-icon">🔌</div>
+        <h2>Total Appliances</h2>
+        <p class="summary-value">{{ appliances|length }}</p>
+        <p class="note">Registered appliances</p>
+    </div>
+
+    <div class="card summary-card">
+        <div class="summary-icon">⚡</div>
+        <h2>Total Energy</h2>
+        <p class="summary-value">{{ total_kwh }} kWh</p>
+        <p class="note">Estimated usage for the entered periods</p>
+    </div>
+
+    <div class="card summary-card">
+        <div class="summary-icon">💰</div>
+        <h2>Estimated Bill</h2>
+        <p class="summary-value">
+            ₹{{ "%.2f"|format(total_cost) }}
+        </p>
+        <p class="note">At ₹{{ tariff }} per kWh</p>
+    </div>
+
+</section>
+<!-- Dashboard content in parallel columns -->
+<div class="dashboard-main-grid">
+
+    <!-- Left column: Energy Chart -->
+    <section class="card">
+        <h2>📊 Appliance Energy Usage</h2>
+        <p class="note">
+            Compare estimated electricity consumption for each appliance.
+        </p>
+
+        <div class="chart-container">
+            <canvas
+                id="energyChart"
+                data-labels='{{ appliances | map(attribute="name") | list | tojson }}'
+                data-values='{{ appliances | map(attribute="energy") | list | tojson }}'>
+            </canvas>
+        </div>
+
+        {% if not appliances %}
+            <p class="note">
+                No appliance data yet. Add an appliance to display the chart.
+            </p>
+        {% endif %}
+    </section>
+
+    <!-- Right column -->
+    <div class="dashboard-side">
+
+        <section class="card">
+            <h2>Quick Actions</h2>
+            <p>Manage appliances and explore energy reports.</p>
+
+            <div class="quick-actions">
+                <a class="action-link"
+                   href="{{ url_for('appliances') }}">
+                    ➕ Manage Appliances
+                </a>
+
+                <a class="action-link"
+                   href="{{ url_for('reports') }}">
+                    📈 View Reports
+                </a>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>About Your Energy Usage</h2>
+
+            <p>
+                Consumption is estimated from appliance power,
+                daily usage hours, and the number of days entered.
+            </p>
+
+            <p>
+                <strong>Formula:</strong> Watts × Hours/day × Days ÷ 1000
+            </p>
+
+            <p class="note">
+                Actual bills may differ because of taxes, fixed charges,
+                and electricity tariff slabs.
+            </p>
+        </section>
+
+    </div>
+</div>
+
+{% endblock %}

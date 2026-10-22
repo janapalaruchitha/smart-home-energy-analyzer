@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Register | SmartEnergy{% endblock %}
+
+{% block content %}
+
+<div class="login-page">
+
+    <section class="card login-card">
+
+        <div class="login-icon">🌿</div>
+
+        <h1>Create Account</h1>
+        <p class="login-subtitle">
+            Smart Home Energy Consumption Analyzer
+        </p>
+
+        <form method="POST" action="{{ url_for('register') }}">
+
+            <label for="email">Email Address</label>
+            <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Enter your email"
+                autocomplete="email"
+                required
+            >
+
+            <label for="password">Password</label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Create a password (minimum 8 characters)"
+                autocomplete="new-password"
+                minlength="8"
+                maxlength="128"
+                required
+            >
+
+            <button type="submit" class="login-button">
+                Create Account
+            </button>
+
+        </form>
+
+        <p class="login-note">
+            Create your account to monitor electricity usage
+            and estimated energy costs.
+        </p>
+
+        <a class="back-link" href="{{ url_for('login') }}">
+            Already have an account? Sign In
+        </a>
+
+    </section>
+
+</div>
+
+{% endblock %}

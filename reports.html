@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Reports & Analytics | SmartEnergy{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-heading">
+    <h1>Reports & Analytics</h1>
+    <p>Analyze household energy consumption, electricity costs, and saving opportunities.</p>
+</section>
+
+<!-- Summary -->
+<section class="summary-grid">
+    <div class="card summary-card">
+        <div class="summary-icon">⚡</div>
+        <h2>Total Energy Usage</h2>
+        <p class="summary-value">{{ total_kwh }} kWh</p>
+        <p class="note">Based on the appliances entered</p>
+    </div>
+
+    <div class="card summary-card">
+        <div class="summary-icon">💰</div>
+        <h2>Estimated Cost</h2>
+        <p class="summary-value">₹{{ "%.2f"|format(total_cost) }}</p>
+        <p class="note">At ₹{{ tariff }} per kWh</p>
+    </div>
+
+    <div class="card summary-card">
+        <div class="summary-icon">🔌</div>
+        <h2>Appliances Analyzed</h2>
+        <p class="summary-value">{{ appliances|length }}</p>
+        <p class="note">Registered appliances</p>
+    </div>
+</section>
+
+<!-- Highest consuming appliance -->
+<section class="card">
+    <h2>Highest Energy-Consuming Appliance</h2>
+
+    {% if highest %}
+        <h3>{{ highest.name }}</h3>
+        <p>
+            Estimated energy consumption:
+            <strong>{{ highest.energy }} kWh</strong>
+        </p>
+        <p>
+            Estimated cost:
+            <strong>₹{{ "%.2f"|format(highest.cost) }}</strong>
+        </p>
+        <p class="note">
+            Consider reviewing its operating hours and using an
+            energy-efficient alternative where practical.
+        </p>
+    {% else %}
+        <p>No appliance data is available yet. Add appliances to generate a report.</p>
+    {% endif %}
+</section>
+
+<!-- Appliance comparison -->
+<section class="card">
+    <h2>Appliance Consumption Report</h2>
+
+    {% if appliances %}
+    <div style="overflow-x:auto">
+        <table>
+            <thead>
+                <tr>
+                    <th>Appliance</th>
+                    <th>Power (W)</th>
+                    <th>Hours/day</th>
+                    <th>Days</th>
+                    <th>Energy (kWh)</th>
+                    <th>Estimated Cost (₹)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in appliances %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.watts }}</td>
+                    <td>{{ item.hours }}</td>
+                    <td>{{ item.days }}</td>
+                    <td>{{ item.energy }}</td>
+                    <td>{{ "%.2f"|format(item.cost) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <p>No data to report yet.</p>
+        <a class="action-link" href="{{ url_for('appliances') }}">
+            Add Appliances
+        </a>
+    {% endif %}
+</section>
+
+<!-- Recommendations -->
+<section class="card">
+    <h2>💡 Energy-Saving Recommendations</h2>
+
+    {% if recommendations %}
+        <ul class="recommendation-list">
+            {% for recommendation in recommendations %}
+                <li>{{ recommendation }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Add appliances to receive usage recommendations.</p>
+    {% endif %}
+
+    <p class="note">
+        These recommendations are based on the appliance details entered.
+        Actual savings depend on usage habits and electricity tariffs.
+    </p>
+</section>
+
+<section class="card">
+    <h2>How This Report Is Calculated</h2>
+    <p>
+        <strong>Energy (kWh)</strong> =
+        Power (watts) × Hours per day × Number of days ÷ 1000
+    </p>
+    <p>
+        <strong>Estimated cost</strong> = Energy (kWh) × Tariff per kWh
+    </p>
+</section>
+
+{% endblock %}

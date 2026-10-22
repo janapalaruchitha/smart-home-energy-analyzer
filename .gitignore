@@ -1,0 +1,20 @@
+# Python cache and virtual environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Secrets and local environment files
+.env
+.env.*
+!.env.example
+
+# Google Cloud credentials
+*service-account*.json
+*credentials*.json
+application_default_credentials.json
+
+# Local backups and test files
+app_backup.py
+firestore_service_backup.py
+test_firestore.py

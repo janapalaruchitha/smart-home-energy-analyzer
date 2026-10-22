@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% block title %}Smart Home Energy Analyzer{% endblock %}</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    {% block head %}{% endblock %}
+</head>
+<body>
+
+<header class="site-header">
+    <div class="nav-container">
+        <a class="brand" href="{{ url_for('dashboard') }}">
+            🌿 SmartEnergy
+        </a>
+
+        <nav class="main-nav">
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('appliances') }}">Appliances</a>
+            <a href="{{ url_for('reports') }}">Reports</a>
+            <a href="{{ url_for('login') }}">Login</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+    Smart Home Energy Consumption Analyzer
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+{% block scripts %}{% endblock %}
+
+</body>
+</html>
